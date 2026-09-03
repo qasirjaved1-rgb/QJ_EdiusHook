@@ -13,12 +13,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup MSVC Developer Command Prompt
-      uses: ilammy/msvc-dev-cmd@v1
-
-    - name: Compile CPP to DLL
+    - name: Compile CPP to DLL using MinGW
       run: |
-        cl /LD QJ_EdiusHook.cpp /link /OUT:QJ_EdiusHook.dll
+        g++ -shared -o QJ_EdiusHook.dll QJ_EdiusHook.cpp -luser32 -lkernel32
 
     - name: Upload DLL Artifact
       uses: actions/upload-artifact@v4
