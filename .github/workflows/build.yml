@@ -13,9 +13,19 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Compile CPP to DLL using MinGW
+    - name: Setup MSVC Developer Command Prompt
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Download MinHook Library
       run: |
-        g++ -shared -o QJ_EdiusHook.dll QJ_EdiusHook.cpp -luser32 -lkernel32
+        git clone https://github.com/TsudaKageyu/minhook.git minhook
+        cd minhook/build/VC17
+        msbuild MinHook.vcxproj /p:Configuration=Release /p:Platform=x64
+        cd ../../..
+
+    - name: Compile CPP to DLL
+      run: |
+        cl /LD QJ_EdiusHook.cpp /I"minhook/include" /link "minhook/build/VC17/bin/Release/MinHook.x64.lib" /OUT:QJ_EdiusHook.dll
 
     - name: Upload DLL Artifact
       uses: actions/upload-artifact@v4
