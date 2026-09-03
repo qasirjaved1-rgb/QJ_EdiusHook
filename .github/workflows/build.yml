@@ -1,0 +1,27 @@
+name: Build DLL
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup MSVC Developer Command Prompt
+      uses: ilammy/msvc-dev-cmd@v1
+
+    - name: Compile CPP to DLL
+      run: |
+        cl /LD QJ_EdiusHook.cpp /link /OUT:QJ_EdiusHook.dll
+
+    - name: Upload DLL Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: QJ_EdiusHook-DLL
+        path: QJ_EdiusHook.dll
